@@ -1,13 +1,13 @@
 import { Default, Format, Property, Required } from "@tsed/schema";
 import { Model, ObjectID, Unique } from "@tsed/mongoose";
 
-enum Categories {
-  CAT1 = "cat1",
-  CAT2 = "cat2",
-}
+// enum Categories {
+//   CAT1 = "cat1",
+//   CAT2 = "cat2",
+// }
 
 @Model()
-export class MyModel {
+export class UserModel {
   @ObjectID("id")
   _id: string;
 
@@ -21,6 +21,10 @@ export class MyModel {
   @Required()
   @Format("email")
   email: string;
+
+  @Unique()
+  @Required()
+  phoneNumber: string;
 
   @Required()
   password: string;
