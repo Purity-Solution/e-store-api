@@ -3,7 +3,7 @@ import { BodyParams, Context } from "@tsed/platform-params";
 import { Get, Post, Property, Required, Returns } from "@tsed/schema";
 import { SuccessResult } from "../../utils/entities";
 import { UserService } from "../../services/UserService";
-import { SuccessReturnModel, UserReturnModel } from "src/RestModel";
+import { LoginRetrunModel, SuccessReturnModel, UserReturnModel } from "src/RestModel";
 import jwt from "jsonwebtoken";
 import { BadRequest, NotFound } from "@tsed/exceptions";
 
@@ -23,6 +23,7 @@ class LoginParams {
   @Required() public readonly password: string;
 }
 
+const privateKey = process.env.PRIVATE_KEY || "LKXTwt0oxAQZXDE";
 @Controller("/user")
 export class UserController {
   @Inject()
@@ -37,13 +38,16 @@ export class UserController {
   }
 
   @Post("/login")
-  @Returns(200, SuccessResult).Of(LoginParams)
+  @Returns(200, SuccessResult).Of(LoginRetrunModel)
   public async login(@BodyParams() body: LoginParams) {
     const { email, password } = body;
     const user = await this.userService.findUserByEmail(email);
     if (!user) throw new NotFound("USER NOT FOUND");
     if (user.password !== password) throw new BadRequest("Invalid password");
-    const token = jwt.sign("", process.env.PRIVATE_KEY || "LKXTwt0oxAQZXDE");
-    console.log("token-------------------------", token);
+    const token = jwt.sign({ email: user.email }, privateKey, { expiresIn: "7d" });
+    return new SuccessResult(
+      { firstName: user.firstName, email: user.email, token },
+      LoginRetrunModel
+    );
   }
 }

@@ -15,3 +15,9 @@ export class UserReturnModel {
 export class SuccessReturnModel {
   @Property() public readonly message: string;
 }
+
+export class LoginRetrunModel {
+  @Required() public readonly firstName: string;
+  @Required() public readonly email: string;
+  @Required() public readonly token: string;
+}
