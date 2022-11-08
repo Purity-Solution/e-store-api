@@ -6,6 +6,8 @@ import { UserService } from "../../services/UserService";
 import { LoginRetrunModel, SuccessReturnModel, UserReturnModel } from "src/RestModel";
 import jwt from "jsonwebtoken";
 import { BadRequest, NotFound } from "@tsed/exceptions";
+import { UserModel } from "src/models/UserModel";
+import { verifyToken } from "../../utils/helper";
 
 class UserParams {
   @Required() public readonly firstName: string;
@@ -49,5 +51,15 @@ export class UserController {
       { firstName: user.firstName, email: user.email, token },
       LoginRetrunModel
     );
+  }
+
+  @Get("/all")
+  @Returns(200, SuccessResult).Of(UserModel)
+  public async getUsers(@Context() context: Context) {
+    console.log(context.get("user"));
+    const data = verifyToken("");
+    console.log("data token=------------/", data);
+
+    const users = await this.userService.findUsers();
   }
 }
