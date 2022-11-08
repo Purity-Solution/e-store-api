@@ -6,9 +6,13 @@ import { CreateUserTypes } from "../../types";
 Injectable();
 export class UserService {
   @Inject(UserModel)
-  private model: MongooseModel<UserModel>;
+  private userModel: MongooseModel<UserModel>;
 
   public async createUser(data: CreateUserTypes) {
-    await this.model.create({ ...data });
+    await this.userModel.create({ ...data });
+  }
+
+  public async findUserByEmail(email: string) {
+    return this.userModel.findOne({ where: { email } });
   }
 }
